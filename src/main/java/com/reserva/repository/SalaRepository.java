@@ -13,4 +13,7 @@ public interface SalaRepository extends JpaRepository<SalaEntity, Long>, JpaSpec
 
     //listar as salas que estão ativas para reservas
     List<SalaEntity> findByAtivoTrue();
+
+    //Buscas as salas que tem o mesmo nome
+    boolean existsByNome(String nome);
 }
