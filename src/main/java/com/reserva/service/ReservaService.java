@@ -139,6 +139,20 @@ public class ReservaService {
         return toResponseDTO(reserva);
     }
 
+    @Transactional 
+    public ReservaResponseDTO cancelarReserva(Long idReserva){
+        ReservaEntity reserva = reservaRepository.findById(idReserva).orElseThrow(() -> new RecursoNaoEncontrado("Reserva não encontrada para esse ID!"));
+        
+        if (reserva.getStatus() == StatusReserva.CANCELADO){
+            throw new RecursoConflitantes("Essa reserva já se encontra cancelada!");
+        }
+
+        reserva.setStatus(StatusReserva.CANCELADO);
+        ReservaEntity reservaAtualizada = reservaRepository.save(reserva);
+
+        return toResponseDTO(reservaAtualizada);
+    }
+
     public ReservaResponseDTO toResponseDTO(ReservaEntity reserva){
         return new ReservaResponseDTO(
             reserva.getIdReserva(),
