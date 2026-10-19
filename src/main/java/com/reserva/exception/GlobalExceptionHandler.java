@@ -32,6 +32,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(new MensagemErro(ex.getMessage()));
     }
 
+    // Intercepta um json incompleto ou mal formatado
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<MensagemErro> tratarErroJsonInvalido(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest()
+                .body(new MensagemErro("O corpo da requisição é inválido ou contém tipos incompatíveis!"));
+    }
+
+
     // DTOs auxiliares para formatar a resposta no Postman:
     public record DadosErroValidacao(String campo, String mensagem) {}
     public record MensagemErro(String mensagem) {}
