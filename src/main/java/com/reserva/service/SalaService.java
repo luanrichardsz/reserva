@@ -2,8 +2,12 @@ package com.reserva.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.reserva.dto.SalaRequestDTO;
 import com.reserva.dto.SalaResponseDTO;
+import com.reserva.exception.RecursoConflitantes;
+import com.reserva.exception.RecursoNaoEncontrado;
 import com.reserva.exception.SalaExistente;
 import com.reserva.model.SalaEntity;
 import com.reserva.repository.SalaRepository;
@@ -11,6 +15,7 @@ import com.reserva.repository.SalaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor 
 public class SalaService {
 
@@ -44,6 +49,20 @@ public class SalaService {
         return salas.stream()
                     .map(this::toResponseDTO)
                     .toList();
+    }
+
+    @Transactional
+    public SalaResponseDTO interditar(Long idSala){
+        SalaEntity sala = salaRepository.findById(idSala).orElseThrow(() -> new RecursoNaoEncontrado("Sala não encontrada para esse ID!"));
+
+        if(!sala.isAtivo()){
+            throw new RecursoConflitantes("Essa sala já se encontra interditada!");
+        }
+
+        sala.setAtivo(false);
+        SalaEntity salaAtualizada = salaRepository.save(sala);
+
+        return toResponseDTO(salaAtualizada);
     }
 
     public SalaResponseDTO toResponseDTO(SalaEntity sala){

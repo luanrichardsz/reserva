@@ -10,10 +10,12 @@ import com.reserva.model.UsuarioEntity;
 import com.reserva.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional 
     public UsuarioResponseDTO cadastrar(UsuarioRequestDTO dto){
