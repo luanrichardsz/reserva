@@ -48,6 +48,11 @@ public class ReservaService {
         //Não é permitido criar uma reserva para um usuario inexistente.
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new RecursoNaoEncontrado("Não é possivel reservar, usuario não encontrado!"));
 
+        //Não é permitido criar uma reserva com uma sala interditada/inativa
+        if(!sala.isAtivo()){
+            throw new RecursoConflitantes("Não é possivel reservar, esta sala esta interditada.");
+        }
+
         //Não podem existir duas reservas ativas para a mesma sala em horários conflitantes.
         if(reservaRepository.existsReservaConflitante(idSala, status, dataInicio, dataFim)){
             throw new RecursoConflitantes("Não é possivel reservar, esse horario já esta ocupado.");
@@ -80,10 +85,10 @@ public class ReservaService {
 
     }
 
-    public List<ReservaResponseDTO> listarReservasDoUsuario(Long idUsuario, StatusReserva status){
+    public List<ReservaResponseDTO> listarReservasDoUsuario(Long idUsuario){
         usuarioRepository.findById(idUsuario).orElseThrow(() -> new RecursoNaoEncontrado("Usuario não encontrada!"));
         
-        List<ReservaEntity> usuariosComReservas = reservaRepository.findSalasReservadasPorUsuario(idUsuario, status);
+        List<ReservaEntity> usuariosComReservas = reservaRepository.findSalasReservadasPorUsuario(idUsuario);
         if(usuariosComReservas.isEmpty()){
             throw new RecursoNaoEncontrado("Reservas não encontradas para esse usuario!");
 

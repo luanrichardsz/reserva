@@ -39,14 +39,14 @@ public interface ReservaRepository extends JpaRepository<ReservaEntity, Long>, J
     );
 
     // Reservadas por um usuario especifico
-    @Query("SELECT r FROM ReservaEntity r WHERE r.usuario.idUsuario = :idUsuario AND r.status = :status")
-    List<ReservaEntity> findSalasReservadasPorUsuario(@Param("idUsuario") Long idUsuario, @Param("status") StatusReserva status);
+    @Query("SELECT r FROM ReservaEntity r WHERE r.usuario.idUsuario = :idUsuario")
+    List<ReservaEntity> findSalasReservadasPorUsuario(@Param("idUsuario") Long idUsuario);
 
     // Salas que estão reservadas atualmente
-    @Query("SELECT r FROM ReservaEntity r WHERE r.status = :status")
+    @Query("SELECT DISTINCT r.sala FROM ReservaEntity r WHERE r.status = :status")
     List<SalaEntity> findSalasComReservasAtivas(@Param("status") StatusReserva status);
 
     // Listar reservas pela data de inicio
-    @Query("SELECT r FROM ReservaEntity r WHERE r.dataInicio < :diaFim AND r.dataFim > :diaInicio")
-    List<ReservaEntity> findReservasPorDia(@Param("diaFim") Instant diaFim, @Param("diaInicio") Instant diaInicio);
+    @Query("SELECT r FROM ReservaEntity r WHERE r.dataFim > :diaInicio AND r.dataInicio < :diaFim")
+    List<ReservaEntity> findReservasPorDia(@Param("diaInicio") Instant diaInicio, @Param("diaFim") Instant diaFim);
 }
