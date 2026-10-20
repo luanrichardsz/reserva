@@ -40,7 +40,12 @@ public class GlobalExceptionHandler {
                 .body(new MensagemErro("O corpo da requisição é inválido ou contém tipos incompatíveis!"));
     }
 
-
+    // Intercepta erro 500, erro de argumento errado
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MensagemErro> tratarErroArgumento(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(new MensagemErro(ex.getMessage()));
+    }
+    
     // DTOs auxiliares para formatar a resposta no Postman:
     public record DadosErroValidacao(String campo, String mensagem) {}
     public record MensagemErro(String mensagem) {}
