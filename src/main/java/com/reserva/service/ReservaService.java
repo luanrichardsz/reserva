@@ -86,7 +86,7 @@ public class ReservaService {
     }
 
     public List<ReservaResponseDTO> listarReservasDoUsuario(Long idUsuario){
-        usuarioRepository.findById(idUsuario).orElseThrow(() -> new RecursoNaoEncontrado("Usuario não encontrada!"));
+        usuarioRepository.findById(idUsuario).orElseThrow(() -> new RecursoNaoEncontrado("Usuario não encontrado!"));
         
         List<ReservaEntity> usuariosComReservas = reservaRepository.findSalasReservadasPorUsuario(idUsuario);
         if(usuariosComReservas.isEmpty()){
